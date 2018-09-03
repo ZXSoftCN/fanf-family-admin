@@ -29,8 +29,11 @@ const App = ({
   let { pathname } = location
   pathname = pathname.startsWith('/') ? pathname : `/${pathname}`
   const { iconFontJS, iconFontCSS, logo } = config
-  const current = menu.filter(item => pathToRegexp(item.route || '').exec(pathname))
-  const hasPermission = current.length ? permissions.visit.includes(current[0].id) : false
+
+  const current = menu.filter(item => pathToRegexp(item.pathKey || '').exec(pathname))
+  // const existsMenuIds = permissions.filter(item => item.id === current[0].id)
+  // const hasPermission = current.length ? permissions.visit.includes(current[0].id) : false
+  const hasPermission = current.length ? permissions.some(item => item.id === current[0].id): false
   const { href } = window.location
 
   if (lastHref !== href) {
@@ -94,7 +97,7 @@ const App = ({
     <div>
       <Loader fullScreen spinning={loading.effects['app/query']} />
       <Helmet>
-        <title>ANTD ADMIN</title>
+        <title>泛泛家园</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <link rel="icon" href={logo} type="image/x-icon" />
         {iconFontJS && <script src={iconFontJS} />}

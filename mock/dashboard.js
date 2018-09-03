@@ -6,6 +6,9 @@ const config = require('../src/utils/config')
 const { apiPrefix } = config
 
 const Dashboard = Mock.mock({
+  msg:"登录成功",
+  status:1,
+  data:{
   'sales|8': [
     {
       'name|+1': 2008,
@@ -123,7 +126,7 @@ const Dashboard = Mock.mock({
       number: 4324,
     },
   ],
-})
+}})
 
 module.exports = {
   [`GET ${apiPrefix}/dashboard`] (req, res) {

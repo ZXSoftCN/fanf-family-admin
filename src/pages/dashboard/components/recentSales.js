@@ -6,20 +6,20 @@ import styles from './recentSales.less'
 
 const status = {
   1: {
-    color: color.green,
-    text: 'SALE',
+    color: color.yellow,
+    text: '不足',
   },
   2: {
-    color: color.yellow,
-    text: 'REJECT',
+    color: color.green,
+    text: '过半',
   },
   3: {
-    color: color.red,
-    text: 'TAX',
+    color: color.blue,
+    text: '待完成',
   },
   4: {
-    color: color.blue,
-    text: 'EXTENDED',
+    color: color.red,
+    text: '超额',
   },
 }
 

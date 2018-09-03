@@ -6,6 +6,7 @@ import styles from './weather.less'
 function Weather ({
   city, icon, dateTime, temperature, name, loading,
 }) {
+  const date = new Date(dateTime).toLocaleDateString()
   return (
     <Spin spinning={loading}>
       <div className={styles.weather}>
@@ -19,7 +20,7 @@ function Weather ({
         </div>
         <div className={styles.right}>
           <h1 className={styles.temperature}>{`${temperature}°`}</h1>
-          <p className={styles.description}>{city},{dateTime}</p>
+          <p className={styles.description}>{city}<span style={{marginLeft:15}}>{date}</span></p>
         </div>
       </div>
     </Spin>)

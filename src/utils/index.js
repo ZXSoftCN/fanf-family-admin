@@ -4,6 +4,7 @@ import cloneDeep from 'lodash.clonedeep'
 export classnames from 'classnames'
 export config from './config'
 export request from './request'
+export outrequest from './outrequest'
 export { color } from './theme'
 
 // 连字符转驼峰
@@ -75,11 +76,11 @@ export function queryArray (array, key, keyAlias = 'key') {
  * 数组格式转树状结构
  * @param   {array}     array
  * @param   {String}    id
- * @param   {String}    pid
+ * @param   {String}    parentMenuId
  * @param   {String}    children
  * @return  {Array}
  */
-export function arrayToTree (array, id = 'id', pid = 'pid', children = 'children') {
+export function arrayToTree (array, id = 'id', pid = 'parentMenuId', children = 'children') {
   let data = cloneDeep(array)
   let result = []
   let hash = {}

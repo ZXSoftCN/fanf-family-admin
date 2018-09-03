@@ -1,7 +1,8 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
-import { Button, Row, Form, Input } from 'antd'
+import { Button, Row, Form, Input,Icon } from 'antd'
+import { regExpConfig } from 'regulars'
 import { config } from 'utils'
 import styles from './index.less'
 
@@ -35,27 +36,29 @@ const Login = ({
           {getFieldDecorator('username', {
             rules: [
               {
-                required: true,
+                required: true, min: 3, max: 10, message: '用户名为3-10个字符',
               },
+              { pattern: regExpConfig.policeNo, message: '账号3-10位数字或字母组成' },
             ],
-          })(<Input onPressEnter={handleOk} placeholder="Username" />)}
+          })(<Input onPressEnter={handleOk} addonBefore={<Icon type="user" />} placeholder="请输入用户名" type="text" />)}
         </FormItem>
         <FormItem hasFeedback>
           {getFieldDecorator('password', {
             rules: [
               {
-                required: true,
+                required: true, min: 5, max: 16, message: '密码为5-16个字符',
               },
+              { pattern: regExpConfig.pwd, message: '密码由5-16位数字或者字母组成' },
             ],
-          })(<Input type="password" onPressEnter={handleOk} placeholder="Password" />)}
+          })(<Input addonBefore={<Icon type="lock" />} placeholder="请输入密码" type="password" onPressEnter={handleOk} />)}
         </FormItem>
         <Row>
           <Button type="primary" onClick={handleOk} loading={loading.effects.login}>
-            Sign in
+            登录
           </Button>
           <p>
-            <span>Username：guest</span>
-            <span>Password：guest</span>
+            <span>Username：admin</span>
+            <span>Password：123456</span>
           </p>
         </Row>
 

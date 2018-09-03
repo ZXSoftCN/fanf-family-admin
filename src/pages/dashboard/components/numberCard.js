@@ -5,24 +5,39 @@ import CountUp from 'react-countup'
 import styles from './numberCard.less'
 
 function NumberCard ({
-  icon, color, title, number, countUp,
+  icon,  title, numbers, countUp,color,amount,subTitle1,subTitle2,
 }) {
   return (
     <Card className={styles.numberCard} bordered={false} bodyStyle={{ padding: 0 }}>
-      <Icon className={styles.iconWarp} style={{ color }} type={icon} />
+      <Icon className={styles.iconWarp} style={ {color} } type={icon} />
       <div className={styles.content}>
         <p className={styles.title}>{title || 'No Title'}</p>
-        <p className={styles.number}>
-          <CountUp
+        <div className={styles.p}>
+          {subTitle1?<p>
+            <span className={styles.subtitle}>{subTitle1}</span>
+            <CountUp className={styles.number}
+                     start={0}
+                     end={numbers}
+                     duration={2.75}
+                     useEasing
+                     useGrouping
+                     separator=","
+                     {...countUp || {}}
+            />
+          </p>:<div />}
+          {subTitle2?<p>
+          <span className={styles.subtitle}>{subTitle2}</span>
+          <CountUp className={styles.number}
             start={0}
-            end={number}
+            end={amount}
             duration={2.75}
             useEasing
             useGrouping
             separator=","
             {...countUp || {}}
           />
-        </p>
+        </p>:<p></p>}
+        </div>
       </div>
     </Card>
   )

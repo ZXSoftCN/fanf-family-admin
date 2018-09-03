@@ -14,19 +14,20 @@ const countUpProps = {
 }
 
 function User ({
-  avatar, name, email, sales, sold,
+  avatarPath:avatar, name,  dealAmount:sales, numbers,msg,month,
 }) {
   return (<div className={styles.user}>
     <div className={styles.header}>
       <div className={styles.headerinner}>
+        <h5>{`${month}月最佳员工`}</h5>
         <div className={styles.avatar} style={{ backgroundImage: `url(${avatar})` }} />
         <h5 className={styles.name}>{name}</h5>
-        <p>{email}</p>
+        <p>dongdong@163.net</p>
       </div>
     </div>
     <div className={styles.number}>
       <div className={styles.item}>
-        <p>EARNING SALES</p>
+        <p>成交金额 (万元)</p>
         <p style={{ color: color.green }}><CountUp
           end={sales}
           prefix="$"
@@ -34,15 +35,16 @@ function User ({
         /></p>
       </div>
       <div className={styles.item}>
-        <p>ITEM SOLD</p>
+        <p>成交笔数</p>
         <p style={{ color: color.blue }}><CountUp
-          end={sold}
+          end={numbers}
           {...countUpProps}
         /></p>
       </div>
     </div>
     <div className={styles.footer}>
-      <Button type="ghost" size="large">View Profile</Button>
+      <p>{msg}</p>
+      {/*<Button type="ghost" size="large">View Profile</Button>*/}
     </div>
   </div>)
 }

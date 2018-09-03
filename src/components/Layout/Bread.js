@@ -11,7 +11,7 @@ const Bread = ({ menu, location }) => {
   let pathArray = []
   let current
   for (let index in menu) {
-    if (menu[index].route && pathToRegexp(menu[index].route).exec(location.pathname)) {
+    if (menu[index].pathKey && pathToRegexp(menu[index].pathKey).exec(location.pathname)) {
       current = menu[index]
       break
     }
@@ -19,8 +19,8 @@ const Bread = ({ menu, location }) => {
 
   const getPathArray = (item) => {
     pathArray.unshift(item)
-    if (item.bpid) {
-      getPathArray(queryArray(menu, item.bpid, 'id'))
+    if (item.parentMenuId) {
+      getPathArray(queryArray(menu, item.parentMenuId, 'id'))
     }
   }
 
@@ -39,7 +39,7 @@ const Bread = ({ menu, location }) => {
     getPathArray(current)
 
     let keys = []
-    let values = pathToRegexp(current.route, keys).exec(location.pathname.replace('#', ''))
+    let values = pathToRegexp(current.pathKey, keys).exec(location.pathname.replace('#', ''))
     if (keys.length) {
       keys.forEach((currentValue, index) => {
         if (typeof currentValue.name !== 'string') {
@@ -53,14 +53,14 @@ const Bread = ({ menu, location }) => {
   // 递归查找父级
   const breads = pathArray.map((item, key) => {
     const content = (
-      <span>{item.icon
-        ? <Icon type={item.icon} style={{ marginRight: 4 }} />
+      <span>{item.iconType
+        ? <Icon type={item.iconType} style={{ marginRight: 4 }} />
         : ''}{item.name}</span>
     )
     return (
       <Breadcrumb.Item key={key}>
         {((pathArray.length - 1) !== key)
-          ? <Link to={pathToRegexp.compile(item.route || '')(paramMap) || '#'}>
+          ? <Link to={pathToRegexp.compile(item.pathKey || '')(paramMap) || '#'}>
             {content}
           </Link>
           : content}

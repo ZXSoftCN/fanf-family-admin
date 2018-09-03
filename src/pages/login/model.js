@@ -10,18 +10,22 @@ export default {
     * login ({
       payload,
     }, { put, call, select }) {
-      const data = yield call(login, payload)
+      const rep = yield call(login, payload)
+      // if (data.data.token) {
+      //   sessionStorage.setItem('token', data.data.token)
+      // }
       const { locationQuery } = yield select(_ => _.app)
-      if (data.success) {
+      if (rep.success) {
         const { from } = locationQuery
-        yield put({ type: 'app/query' })
+        // const { data } = rep
+        yield put({ type: 'app/query' ,payload: {userName:rep.userName}})
         if (from && from !== '/login') {
           yield put(routerRedux.push(from))
         } else {
           yield put(routerRedux.push('/dashboard'))
         }
       } else {
-        throw data
+        throw rep
       }
     },
   },

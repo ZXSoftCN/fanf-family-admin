@@ -42,6 +42,11 @@ export default {
       "changeOrigin": true,
       "pathRewrite": { "^/api/v1/weather": "/v3/weather" }
     },
+    "/api/fanf":{
+      "target": "http://localhost:8081",
+      "changeOrigin": true,
+      "pathRewrite": {"^/api/fanf/user/login": "/login","^/api/fanf/user/logout": "/logout","^/api/fanf" : "/api"}
+    }
     // "/api/v2": {
     //   "target": "http://192.168.0.110",
     //   "changeOrigin": true,
@@ -57,6 +62,7 @@ export default {
     services: resolve(__dirname,"./src/services"),
     models: resolve(__dirname,"./src/models"),
     routes: resolve(__dirname,"./src/routes"),
+    regulars: resolve(__dirname, './src/utils/regulars'),
   },
   urlLoaderExcludes: [
     /\.svg$/,

@@ -1,33 +1,50 @@
 @import "~themes/vars";
 
 .numberCard {
-  padding: 32px;
+  padding: 28px 10px 32px 20px;
   margin-bottom: 24px;
   cursor: pointer;
+  height: 154px;
 
   .iconWarp {
-    font-size: 54px;
+    font-size: 42px;
+    alignment: center;
     float: left;
   }
 
   .content {
     width: 100%;
-    padding-left: 78px;
+    padding-left: 86px;
 
     .title {
-      line-height: 16px;
-      font-size: 16px;
-      margin-bottom: 8px;
-      height: 16px;
+      line-height: 20px;
+      font-size: 20px;
+      margin-bottom: 28px;
+      height: 25px;
       .text-overflow();
     }
+    .p{
+      margin-right: 2px;
+      line-height: 10px;
+    }
+    .subtitle {
+      width: 180px;
+      //height: 20px;
+      //.text-overflow();
+      border-right-width: 1px;
+      font-size: 12px;
+      margin-right: 1px;
+      //height: 12px;
+      //width: 30px;
+      //.text-overflow();
+    }
+
 
     .number {
-      line-height: 32px;
-      font-size: 24px;
-      height: 32px;
-      .text-overflow();
-      margin-bottom: 0;
+      font-size: 20px;
+      margin-right: 10px;
+      text-align: right;
+      float: right;
     }
   }
 }

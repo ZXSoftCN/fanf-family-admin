@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import styles from './quote.less'
 
 function Quote ({
-  name, content, title, avatar,
+  name, msg:content, title, avatarPath:avatar,dealAmount,numbers,
 }) {
   return (
     <div className={styles.quote}>

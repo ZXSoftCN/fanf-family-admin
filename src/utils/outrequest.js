@@ -86,7 +86,7 @@ const fetch = (options) => {
   }
 }
 
-export default function request (options) {
+export default function outrequest (options) {
   if (options.url && options.url.indexOf('//') > -1) {
     const origin = `${options.url.split('//')[0]}//${options.url.split('//')[1].split('/')[0]}`
     if (window.location.origin !== origin) {
@@ -102,66 +102,32 @@ export default function request (options) {
 
   return fetch(options).then((response) => {
     const { statusText, status } = response
-    if (response.headers.token) {
-      sessionStorage.setItem('token', response.headers.token)// 刷新token
-    }
     let data = options.fetchType === 'YQL' ? response.data.query.results.json : response.data
-    //ToDo 在后端进行对集合数据进行了格式化处理。若为数组，则直接访问data.list.
-    // if (data instanceof Array) {
-    //   data = {
-    //     list: data,
-    //   }
-    // }
-    // return Promise.resolve({
-    //   success: true,
-    //   message: statusText,
-    //   statusCode: status,
-    //   ...data,
-    // })
-    switch (data.status) {
-      case 1: {
-        const innerData = data.data
-      return Promise.resolve({
-        success: true,
-        message: statusText,
-        statusCode: status,
-        ...innerData,
-      })
-      }
-      case 0: {
-        // eslint-disable-next-line
-        const statusCode = data.data !== null && data.data.statusCode ? data.data.statusCode : 200
-        if (statusCode === 500) {
-          // message.error(data.data.message + '系统内部错误!')
-        } else {
-          message.warning(data.msg)
-        }
-        return Promise.reject({ success: false, message: data.msg,statusCode })
-        // message.warning(response.msg)
-      }
-      case -1: {
-        //转到plugins的onError抛出
-        // message.error(response.msg)
-        return Promise.reject({ success: false, message: data.msg })
-      }
-      default: {
-        message.warning('服务器返回参数无法识别')
-        return Promise.reject({ success: false, message: data.msg })
+    if (data instanceof Array) {
+      data = {
+        list: data,
       }
     }
+    return Promise.resolve({
+      success: true,
+      message: statusText,
+      statusCode: status,
+      ...data,
+    })
   }).catch((error) => {
     const { response } = error
-    let {message} = error
-    let {statusCode = 600} = error
+    let msg
+    let statusCode
     if (response && response instanceof Object) {
       const { data, statusText } = response
       statusCode = response.status
-      message = data.message || statusText
+      msg = data.message || statusText
     } else {
-      message = error.message || 'Network Error'
+      statusCode = 600
+      msg = error.message || 'Network Error'
     }
 
     /* eslint-disable */
-    return Promise.reject({ success: false, statusCode, message })
+    return Promise.reject({ success: false, statusCode, message: msg })
   })
 }

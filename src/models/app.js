@@ -17,15 +17,13 @@ export default {
   namespace: 'app',
   state: {
     user: {},
-    permissions: {
-      visit: [],
-    },
+    permissions: [],
     menu: [
       {
         id: 1,
-        icon: 'laptop',
+        iconType: 'laptop',
         name: 'Dashboard',
-        router: '/dashboard',
+        pathKey: '/dashboard',
       },
     ],
     menuPopoverVisible: false,
@@ -51,7 +49,7 @@ export default {
     },
 
     setup ({ dispatch }) {
-      dispatch({ type: 'query' })
+      dispatch({ type: 'query' }) //屏蔽了系统刚进入时执行*query动作
       let tid
       window.onresize = () => {
         clearTimeout(tid)
@@ -67,24 +65,42 @@ export default {
     * query ({
       payload,
     }, { call, put, select }) {
+      const localApp = yield select(_ => _.app)
+      const {locationPathname} = localApp
+      if (locationPathname === '/'){
+        yield put(routerRedux.push({
+          pathname: '/login',
+          // search: queryString.stringify({
+          //   from: locationPathname,
+          // }),
+        }))
+      } else{
+      try {
       const { success, user } = yield call(query, payload)
-      const { locationPathname } = yield select(_ => _.app)
       if (success && user) {
-        const { list } = yield call(menusService.query)
-        const { permissions } = user
+        const rlt = yield call(menusService.query)
+        const{ list } = rlt
+        let { permissions } = user
         let menu = list
-        if (permissions.role === EnumRoleType.ADMIN || permissions.role === EnumRoleType.DEVELOPER) {
-          permissions.visit = list.map(item => item.id)
-        } else {
-          menu = list.filter((item) => {
-            const cases = [
-              permissions.visit.includes(item.id),
-              item.mpid ? permissions.visit.includes(item.mpid) || item.mpid === '-1' : true,
-              item.bpid ? permissions.visit.includes(item.bpid) : true,
-            ]
-            return cases.every(_ => _)
-          })
-        }
+        console.log(list)
+        permissions = list.map(item => {
+          const itemPer = {
+            id: item.id,
+          }
+          return itemPer
+        })
+        // if (permissions.role === EnumRoleType.ADMIN || permissions.role === EnumRoleType.DEVELOPER) {
+        //   permissions.visit = list.map(item => item.id)
+        // } else {
+        //   menu = list.filter((item) => {
+        //     const cases = [
+        //       permissions.visit.includes(item.id),
+        //       item.mpid ? permissions.visit.includes(item.mpid) || item.mpid === '-1' : true,
+        //       item.bpid ? permissions.visit.includes(item.bpid) : true,
+        //     ]
+        //     return cases.every(_ => _)
+        //   })
+        // }
         yield put({
           type: 'updateState',
           payload: {
@@ -106,7 +122,14 @@ export default {
           }),
         }))
       }
-    },
+    }catch(e) {
+        yield put(routerRedux.push({
+          pathname: '/login',
+          search: queryString.stringify({
+            from: locationPathname,
+          }),
+        }))
+    }}},
 
     * logout ({
       payload,
@@ -115,12 +138,12 @@ export default {
       if (data.success) {
         yield put({ type: 'updateState', payload: {
           user: {},
-          permissions: { visit: [] },
+          permissions: [],
           menu: [{
               id: 1,
-              icon: 'laptop',
+              iconType: 'laptop',
               name: 'Dashboard',
-              router: '/dashboard',
+              pathKey: '/dashboard',
             }],
         }})
         yield put({ type: 'query' })

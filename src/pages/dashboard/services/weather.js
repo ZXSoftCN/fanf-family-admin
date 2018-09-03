@@ -1,4 +1,4 @@
-import { request, config } from 'utils'
+import { outrequest as request, config } from 'utils'
 
 const { APIV1 } = config
 

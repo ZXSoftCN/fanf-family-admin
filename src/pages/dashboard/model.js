@@ -8,7 +8,7 @@ export default modelExtend(model, {
   namespace: 'dashboard',
   state: {
     weather: {
-      city: '深圳',
+      city: '东莞',
       temperature: '30',
       name: '晴',
       icon: '//s5.sencdn.com/web/icons/3d_50/2.png',
@@ -50,7 +50,7 @@ export default modelExtend(model, {
     * queryWeather ({
       payload = {},
     }, { call, put }) {
-      payload.location = 'shenzhen'
+      payload.location = 'dongguan'
       const result = yield call(weatherService.query, payload)
       const { success } = result
       if (success) {
@@ -60,6 +60,7 @@ export default modelExtend(model, {
           temperature: data.now.temperature,
           name: data.now.text,
           icon: `//s5.sencdn.com/web/icons/3d_50/${data.now.code}.png`,
+          dateTime: data.last_update,
         }
         yield put({
           type: 'updateState',

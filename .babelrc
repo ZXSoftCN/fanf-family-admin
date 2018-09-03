@@ -14,7 +14,8 @@
           "services": "./src/services",
           "models": "./src/models",
           "routes": "./src/routes",
-          "themes": "./src/themes"
+          "themes": "./src/themes",
+          "regulars": "./src/utils/regulars"
         }
       }
     ]
