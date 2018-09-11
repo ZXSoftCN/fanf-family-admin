@@ -2,9 +2,8 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import moment from 'moment'
-import { FilterItem } from 'components'
-import { Form, Button, Row, Col, DatePicker, Input, Cascader, Switch } from 'antd'
-import city from 'utils/city'
+import { FilterItem } from '../../../../../components/index'
+import { Form, Button, Row, Col, DatePicker, Input,  Switch } from 'antd'
 
 const { Search } = Input
 const { RangePicker } = DatePicker
@@ -37,6 +36,7 @@ const Filter = ({
   const handleFields = (fields) => {
     const { createTime } = fields
     if (createTime.length) {
+      // fields.createTime = JSON.stringify([createTime[0].format('YYYY-MM-DD'), createTime[1].format('YYYY-MM-DD')])
       fields.createTime = [createTime[0].format('YYYY-MM-DD'), createTime[1].format('YYYY-MM-DD')]
     }
     return fields
@@ -69,7 +69,7 @@ const Filter = ({
     fields = handleFields(fields)
     onFilterChange(fields)
   }
-  const { name, address } = filter
+  const { name } = filter
 
   let initialCreateTime = []
   if (filter.createTime && filter.createTime[0]) {
@@ -81,20 +81,13 @@ const Filter = ({
 
   return (
     <Row gutter={24}>
-      <Col {...ColProps} xl={{ span: 4 }} md={{ span: 8 }}>
-        {getFieldDecorator('name', { initialValue: name })(<Search placeholder="Search Name" onSearch={handleSubmit} />)}
+      <Col {...ColProps} xl={{ span: 7 }} md={{ span: 8 }}>
+        <FilterItem label="菜单名称">
+        {getFieldDecorator('name', { initialValue: name })(<Search placeholder="搜索菜单名称" onSearch={handleSubmit} />)}
+        </FilterItem>
       </Col>
-      <Col {...ColProps} xl={{ span: 4 }} md={{ span: 8 }} id="addressCascader">
-        {getFieldDecorator('address', { initialValue: address })(<Cascader
-          style={{ width: '100%' }}
-          options={city}
-          placeholder="Please pick an address"
-          onChange={handleChange.bind(null, 'address')}
-          getPopupContainer={() => document.getElementById('addressCascader')}
-        />)}
-      </Col>
-      <Col {...ColProps} xl={{ span: 6 }} md={{ span: 8 }} sm={{ span: 12 }} id="createTimeRangePicker">
-        <FilterItem label="Createtime">
+      <Col {...ColProps} xl={{ span: 8 }} md={{ span: 8 }} sm={{ span: 12 }} id="createTimeRangePicker">
+        <FilterItem label="创建日期">
           {getFieldDecorator('createTime', { initialValue: initialCreateTime })(<RangePicker
             style={{ width: '100%' }}
             onChange={handleChange.bind(null, 'createTime')}
@@ -104,15 +97,15 @@ const Filter = ({
           />)}
         </FilterItem>
       </Col>
-      <Col {...TwoColProps} xl={{ span: 10 }} md={{ span: 24 }} sm={{ span: 24 }}>
+      <Col {...TwoColProps} xl={{ span: 8 }} md={{ span: 24 }} sm={{ span: 24 }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap' }}>
           <div>
-            <Button type="primary" className="margin-right" onClick={handleSubmit}>Search</Button>
-            <Button onClick={handleReset}>Reset</Button>
+            <Button type="primary" className="margin-right" onClick={handleSubmit}>查询</Button>
+            <Button onClick={handleReset}>重置</Button>
           </div>
           <div className="flex-vertical-center">
             <Switch className="ant-switch-large" style={{ marginRight: 16 }} defaultChecked={isMotion} onChange={switchIsMotion} checkedChildren="Motion" unCheckedChildren="Motion" />
-            <Button type="ghost" onClick={onAdd}>Create</Button>
+            <Button type="ghost" onClick={onAdd}>新增</Button>
           </div>
         </div>
       </Col>

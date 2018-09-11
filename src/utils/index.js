@@ -1,5 +1,6 @@
 /* global window */
 import cloneDeep from 'lodash.clonedeep'
+import pathToRegexp from "path-to-regexp"
 
 export classnames from 'classnames'
 export config from './config'
@@ -73,14 +74,76 @@ export function queryArray (array, key, keyAlias = 'key') {
 }
 
 /**
+ * 树内查询
+ * @param   {Array}     arrTree:数组树（不是唯一根节点的树）
+ * @param   {object}    key:待检索的项
+ * @param   {String}    keyAlias:数组树中核准检索项的对象属性
+ * @return  {String}    children:数组树的子级节点属性名
+ */
+export function queryArrayTree (arrTree,key,  keyAlias = 'id',children = 'children') {
+
+  if (!(arrTree instanceof Array)) {
+    return null
+  }
+  let item = arrTree.filter(_ => _[keyAlias] === key)
+  if (item.length) {
+    return item[0]
+  } else {
+    arrTree.forEach(_ => {
+      if (_[children]) {
+        queryArrayTree(_[children],key,keyAlias,children)
+      }
+    })
+  }
+  if (item.length) {
+    return item[0]
+  }
+  return null
+}
+
+/**
+ * 与queryArrayTree区别：使用pathToRegexp进行比较
+ * @param arrTree
+ * @param key
+ * @param keyAlias
+ * @param children
+ * @returns {*}
+ */
+export function queryRouteArrayTree (arrTree,key,  keyAlias = 'id',children = 'children') {
+  if (!(arrTree instanceof Array)) {
+    return null
+  }
+
+  const cyclicCall = (arrTree,key,  keyAlias ,children) => {
+    if (!arrTree || !(arrTree instanceof Array)) {
+      return
+    }
+    let currRlt = arrTree.filter(_ => pathToRegexp(_[keyAlias]).exec(key));
+    if (currRlt.length) {
+      item = currRlt[0]
+    }else{
+      arrTree.forEach(_ => {
+        if (_[children]) {
+          cyclicCall(_[children],key,keyAlias,children)
+        }
+      })
+    }
+  }
+
+  let item
+  cyclicCall(arrTree,key,keyAlias,children)
+  return item
+}
+
+/**
  * 数组格式转树状结构
  * @param   {array}     array
  * @param   {String}    id
- * @param   {String}    parentMenuId
+ * @param   {String}    parentMenu
  * @param   {String}    children
  * @return  {Array}
  */
-export function arrayToTree (array, id = 'id', pid = 'parentMenuId', children = 'children') {
+export function arrayToTree (array, id = 'id', pid = 'parentMenu', children = 'children') {
   let data = cloneDeep(array)
   let result = []
   let hash = {}

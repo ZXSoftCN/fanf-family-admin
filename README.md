@@ -153,7 +153,7 @@ npm run lint
 
 ## 参考
 
-用户列表：<https://github.com/dvajs/dva/tree/master/examples/user-dashboard>
+用户列表：<https://github.com/dvajs/dva/tree/master/examples/menu-dashboard>
 
 dashboard 设计稿：<https://dribbble.com/shots/3108122-Dashboard-Admin> （已征得作者同意）
 
@@ -161,12 +161,12 @@ dashboard 设计稿：<https://dribbble.com/shots/3108122-Dashboard-Admin> （�
 
 web
 
-![](https://user-images.githubusercontent.com/8142164/43032162-37db46e2-8ce3-11e8-9c7e-73a773bc0545.gif)
+![](https://menu-images.githubusercontent.com/8142164/43032162-37db46e2-8ce3-11e8-9c7e-73a773bc0545.gif)
 
 移动
 
-![](https://user-images.githubusercontent.com/8142164/43032163-3a1f2838-8ce3-11e8-89c5-8e1ae077d34a.gif)
+![](https://menu-images.githubusercontent.com/8142164/43032163-3a1f2838-8ce3-11e8-89c5-8e1ae077d34a.gif)
 
 效果图
 
-![](https://user-images.githubusercontent.com/8142164/43032165-5d151bae-8ce3-11e8-9bfd-8a121620ea78.jpg)
+![](https://menu-images.githubusercontent.com/8142164/43032165-5d151bae-8ce3-11e8-9bfd-8a121620ea78.jpg)

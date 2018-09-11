@@ -18,14 +18,7 @@ export default {
   state: {
     user: {},
     permissions: [],
-    menu: [
-      {
-        id: 1,
-        iconType: 'laptop',
-        name: 'Dashboard',
-        pathKey: '/dashboard',
-      },
-    ],
+    menu: [],
     menuPopoverVisible: false,
     siderFold: window.localStorage.getItem(`${prefix}siderFold`) === 'true',
     darkTheme: window.localStorage.getItem(`${prefix}darkTheme`) === 'true',
@@ -76,8 +69,15 @@ export default {
         }))
       } else{
       try {
-      const { success, user } = yield call(query, payload)
+        const {user : item} = localApp//特别注意：此处直接用user变量取值，会于第84行中的user冲突发生异常。属于同一代码块下的重复变量命名
+        const userName = localStorage.getItem('userName')
+        const params = {
+          userName: userName,//item.userName,
+          ...payload,
+        }
+      const { success, user } = yield call(query, params)
       if (success && user) {
+        localStorage.setItem('userName', user.userName)// 登记当前用户名
         const rlt = yield call(menusService.query)
         const{ list } = rlt
         let { permissions } = user
@@ -136,6 +136,7 @@ export default {
     }, { call, put }) {
       const data = yield call(logout, parse(payload))
       if (data.success) {
+        localStorage.removeItem('userName')
         yield put({ type: 'updateState', payload: {
           user: {},
           permissions: [],

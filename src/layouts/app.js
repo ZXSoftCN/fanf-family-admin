@@ -30,10 +30,51 @@ const App = ({
   pathname = pathname.startsWith('/') ? pathname : `/${pathname}`
   const { iconFontJS, iconFontCSS, logo } = config
 
-  const current = menu.filter(item => pathToRegexp(item.pathKey || '').exec(pathname))
+  //闭包循环检查是否被授权
+  const checkAuthority = (menu,selItem) => {
+    let rlt = false
+
+    const cyclicCheck = (menu,selItem) => {
+      let currRlt = selItem ? menu.some(item => item.id === selItem.id): false
+      if (currRlt) {
+        rlt = currRlt
+      }else{
+        menu.forEach(item => {
+          if (item.subMenus) {
+            cyclicCheck(item.subMenus,selItem)
+          }
+        })
+      }
+    }
+    cyclicCheck(menu,selItem)
+    return rlt
+  }
+
+  //闭包从菜单树中循环找出当前路由菜单
+  const findMenu = (menu,pathname) => {
+
+    const cyclicCall = (menu,pathname) => {
+      let currRlt = menu.filter(item => pathToRegexp(item.pathKey || '').exec(pathname))
+      if (currRlt.length) {
+        current = currRlt[0]
+      }else{
+        menu.forEach(item => {
+          if (item.subMenus) {
+            cyclicCall(item.subMenus,pathname)
+          }
+        })
+      }
+    }
+    cyclicCall(menu,pathname)
+    return current
+  }
+
+  // const current = menu.filter(item => pathToRegexp(item.pathKey || '').exec(pathname))
+  let current = findMenu(menu,pathname)
   // const existsMenuIds = permissions.filter(item => item.id === current[0].id)
   // const hasPermission = current.length ? permissions.visit.includes(current[0].id) : false
-  const hasPermission = current.length ? permissions.some(item => item.id === current[0].id): false
+  // const hasPermission = current.length ? permissions.some(item => item.id === current[0].id): false
+  const hasPermission = checkAuthority(menu,current)
   const { href } = window.location
 
   if (lastHref !== href) {

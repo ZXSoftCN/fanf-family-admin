@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'dva'
-import { Button, Row, Form, Input,Icon } from 'antd'
+import { Button, Row, Form, Input,Icon,message } from 'antd'
 import { regExpConfig } from 'regulars'
 import { config } from 'utils'
 import styles from './index.less'
@@ -10,12 +10,14 @@ const FormItem = Form.Item
 
 const Login = ({
   loading,
+  login,
   dispatch,
   form: {
     getFieldDecorator,
     validateFieldsAndScroll,
   },
 }) => {
+  const {eyeOpen} = login
   function handleOk () {
     validateFieldsAndScroll((errors, values) => {
       if (errors) {
@@ -23,6 +25,11 @@ const Login = ({
       }
       dispatch({ type: 'login/login', payload: values })
     })
+  }
+
+  const handleOpenEye = (item) => {
+    console.log(item)
+    dispatch({type: 'login/switchEyeOpen'})
   }
 
   return (
@@ -38,7 +45,7 @@ const Login = ({
               {
                 required: true, min: 3, max: 10, message: '用户名为3-10个字符',
               },
-              { pattern: regExpConfig.policeNo, message: '账号3-10位数字或字母组成' },
+              { pattern: regExpConfig.userName, message: '账号3-10位数字或字母组成' },
             ],
           })(<Input onPressEnter={handleOk} addonBefore={<Icon type="user" />} placeholder="请输入用户名" type="text" />)}
         </FormItem>
@@ -50,7 +57,8 @@ const Login = ({
               },
               { pattern: regExpConfig.pwd, message: '密码由5-16位数字或者字母组成' },
             ],
-          })(<Input addonBefore={<Icon type="lock" />} placeholder="请输入密码" type="password" onPressEnter={handleOk} />)}
+          })(eyeOpen?<Input addonBefore={<Icon type="eye" onClick={handleOpenEye}/>} placeholder="请输入密码" onPressEnter={handleOk} />
+          :<Input addonBefore={<Icon type="lock" onClick={handleOpenEye}/>} placeholder="请输入密码" type="password" onPressEnter={handleOk} />)}
         </FormItem>
         <Row>
           <Button type="primary" onClick={handleOk} loading={loading.effects.login}>
@@ -73,4 +81,4 @@ Login.propTypes = {
   loading: PropTypes.object,
 }
 
-export default connect(({ loading }) => ({ loading }))(Form.create()(Login))
+export default connect(({ loading,login }) => ({ loading,login }))(Form.create()(Login))

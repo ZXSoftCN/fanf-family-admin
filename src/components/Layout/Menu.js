@@ -12,7 +12,7 @@ const Menus = ({
   siderFold, darkTheme, navOpenKeys, changeOpenKeys, menu, location,
 }) => {
   // 生成树状
-  // const menuTree = arrayToTree(menu.filter(_ => _.showMenu !== 0), 'id', 'parentMenuId','subMenus')
+  // const menuTree = arrayToTree(menu.filter(_ => _.showMenu !== 0), 'id', 'parentMenu','subMenus')
   const levelMap = {}
 
   // 递归生成菜单
@@ -21,14 +21,14 @@ const Menus = ({
       if (item.children) {
         if (item.showMenu && item.showMenu === 1) {
           //记录中层菜单节点，到levelMap中。为后续getAncestorKeys
-          levelMap[item.id] = item.parentMenuId
+          levelMap[item.id] = item.parentMenu
         }
         return (
           <SubMenu
             key={item.id}
             title={<span>
               {item.iconType && <Icon type={item.iconType} />}
-              {(!siderFoldN || !menuTree.includes(item)) && item.name}
+              {(!siderFoldN || !menuTreeN.includes(item)) && item.name}
             </span>}
           >
             {getMenus(item.children, siderFoldN)}
@@ -47,8 +47,13 @@ const Menus = ({
   }
 
   const getMenus = (menu, siderFoldN) => {
+
     return menu.map((item) => {
-      if (item.subMenus) {
+      if (!item.showMenu) {
+        return
+      }
+      const subMenusShow = item.subMenus ? item.subMenus.filter( item => item.showMenu) : undefined;
+      if (subMenusShow && subMenusShow.length > 0) {
         if (item.showMenu && item.parentMenu) {
           //记录中层菜单节点，到levelMap中。为后续getAncestorKeys
           levelMap[item.id] = item.parentMenu
@@ -61,7 +66,7 @@ const Menus = ({
               {(!siderFoldN || !menu.includes(item)) && item.name}
             </span>}
           >
-            {getMenus(item.subMenus, siderFoldN)}
+            {getMenus(subMenusShow, siderFoldN)}
           </SubMenu>
         )
       }
@@ -121,7 +126,7 @@ const Menus = ({
   let defaultSelectedKeys
   for (let item of menu) {
     if (item.pathKey && pathToRegexp(item.pathKey).exec(location.pathname)) {
-      if (!navOpenKeys.length && item.showMenu === 1 && !openKeysFlag) changeOpenKeys([String(item.parentMenuId)])
+      if (!navOpenKeys.length && item.showMenu === 1 && !openKeysFlag) changeOpenKeys([String(item.parentMenu)])
       currentMenu = item
       break
     }
@@ -131,7 +136,7 @@ const Menus = ({
     const getPath = (item) => {
       if (item && item[pid]) {
         if (item[pid] === '-1') { // ToDo 检测节点pid是否由null判断
-          result.unshift(String(item['parentId']))
+          result.unshift(String(item['parentMenu']))
         } else {
           result.unshift(String(item[pid]))
           getPath(queryArray(array, item[pid], id))
@@ -142,7 +147,7 @@ const Menus = ({
     return result
   }
   if (currentMenu) {
-    defaultSelectedKeys = getPathArray(menu, currentMenu, 'parentMenuId', 'id')
+    defaultSelectedKeys = getPathArray(menu, currentMenu, 'parentMenu', 'id')
   }
 
   if (!defaultSelectedKeys) {

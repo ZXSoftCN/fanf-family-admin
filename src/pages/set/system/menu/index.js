@@ -10,13 +10,13 @@ import Filter from './components/Filter'
 import Modal from './components/Modal'
 
 
-const User = ({
-  location, dispatch, user, loading,
+const Menu = ({
+  location, dispatch, menu, loading,
 }) => {
   const { query, pathname } = location
   const {
     list, pagination, currentItem, modalVisible, modalType, isMotion, selectedRowKeys,
-  } = user
+  } = menu
 
   const handleRefresh = (newQuery) => {
     dispatch(routerRedux.push({
@@ -32,12 +32,14 @@ const User = ({
     item: modalType === 'create' ? {} : currentItem,
     visible: modalVisible,
     maskClosable: false,
-    confirmLoading: loading.effects[`user/${modalType}`],
-    title: `${modalType === 'create' ? 'Create User' : 'Update User'}`,
+    confirmLoading: loading.effects[`menu/${modalType}`],
+    title: `${modalType === 'create' ? '创建菜单' : '修改菜单'}`,
+    modalType: modalType,
     wrapClassName: 'vertical-center-modal',
+    dispatch:dispatch,
     onOk (data) {
       dispatch({
-        type: `user/${modalType}`,
+        type: `menu/${modalType}`,
         payload: data,
       })
         .then(() => {
@@ -46,26 +48,27 @@ const User = ({
     },
     onCancel () {
       dispatch({
-        type: 'user/hideModal',
+        type: 'menu/hideModal',
       })
     },
   }
 
   const listProps = {
     dataSource: list,
-    loading: loading.effects['user/query'],
+    loading: loading.effects['menu/query'],
     pagination,
     location,
     isMotion,
+    size: 'middle',
     onChange (page) {
       handleRefresh({
         page: page.current,
-        pageSize: page.pageSize,
+        size: page.pageSize,
       })
     },
     onDeleteItem (id) {
       dispatch({
-        type: 'user/delete',
+        type: 'menu/delete',
         payload: id,
       })
         .then(() => {
@@ -76,18 +79,27 @@ const User = ({
     },
     onEditItem (item) {
       dispatch({
-        type: 'user/showModal',
-        payload: {
-          modalType: 'update',
-          currentItem: item,
+        type: 'menu/queryCurrent',
+        payload:{
+          id: item.id,
         },
-      })
+      }).then(() => {
+        dispatch({
+          type: 'menu/showModal',
+          payload: {
+            eyeOpen: false,
+            modalType: 'update',
+          },
+        })
+        }
+      )
+
     },
     rowSelection: {
       selectedRowKeys,
       onChange: (keys) => {
         dispatch({
-          type: 'user/updateState',
+          type: 'menu/updateState',
           payload: {
             selectedRowKeys: keys,
           },
@@ -109,20 +121,20 @@ const User = ({
     },
     onAdd () {
       dispatch({
-        type: 'user/showModal',
+        type: 'menu/showModal',
         payload: {
           modalType: 'create',
         },
       })
     },
     switchIsMotion () {
-      dispatch({ type: 'user/switchIsMotion' })
+      dispatch({ type: 'menu/switchIsMotion' })
     },
   }
 
   const handleDeleteItems = () => {
     dispatch({
-      type: 'user/multiDelete',
+      type: 'menu/multiDelete',
       payload: {
         ids: selectedRowKeys,
       },
@@ -141,9 +153,9 @@ const User = ({
         selectedRowKeys.length > 0 &&
         <Row style={{ marginBottom: 24, textAlign: 'right', fontSize: 13 }}>
           <Col>
-            {`Selected ${selectedRowKeys.length} items `}
-            <Popconfirm title="Are you sure delete these items?" placement="left" onConfirm={handleDeleteItems}>
-              <Button type="primary" style={{ marginLeft: 8 }}>Remove</Button>
+            {`已选中 ${selectedRowKeys.length} 项 `}
+            <Popconfirm title="你确定要删除该菜单项？" placement="left" onConfirm={handleDeleteItems}>
+              <Button type="primary" style={{ marginLeft: 8 }}>删除</Button>
             </Popconfirm>
           </Col>
         </Row>
@@ -154,11 +166,11 @@ const User = ({
   )
 }
 
-User.propTypes = {
-  user: PropTypes.object,
+Menu.propTypes = {
+  menu: PropTypes.object,
   location: PropTypes.object,
   dispatch: PropTypes.func,
   loading: PropTypes.object,
 }
 
-export default connect(({ user, loading }) => ({ user, loading }))(User)
+export default connect(({ menu, loading }) => ({ menu, loading }))(Menu)

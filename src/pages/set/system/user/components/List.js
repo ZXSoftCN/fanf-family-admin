@@ -2,9 +2,9 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Table, Modal } from 'antd'
 import classnames from 'classnames'
-import { DropOption } from 'components'
+import { DropOption } from '../../../../../components/index'
 import { Link } from 'react-router-dom'
-import AnimTableBody from 'components/DataTable/AnimTableBody'
+import AnimTableBody from '../../../../../components/DataTable/AnimTableBody'
 import styles from './List.less'
 
 const { confirm } = Modal
@@ -18,7 +18,7 @@ const List = ({
       onEditItem(record)
     } else if (e.key === '2') {
       confirm({
-        title: 'Are you sure delete this record?',
+        title: '你确定要删除该用户？',
         onOk () {
           onDeleteItem(record.id)
         },
@@ -27,55 +27,49 @@ const List = ({
   }
 
   const columns = [
-    {
-      title: 'Avatar',
-      dataIndex: 'avatar',
+    /*{
+      title: '头像',
+      dataIndex: 'iconUrl',
       key: 'avatar',
       width: 64,
       className: styles.avatar,
       render: text => <img alt="avatar" width={24} src={text} />,
+    }, */
+    {
+      title: '用户名',
+      dataIndex: 'userName',
+      key: 'userName',
+      render: (text, record) => <Link to={`/set/system/user/${record.id}`}>{text}</Link>,
     }, {
-      title: 'Name',
+      title: '昵称',
       dataIndex: 'name',
       key: 'name',
-      render: (text, record) => <Link to={`user/${record.id}`}>{text}</Link>,
     }, {
-      title: 'NickName',
-      dataIndex: 'nickName',
-      key: 'nickName',
+      title: '电话',
+      dataIndex: 'telephone',
+      key: 'telephone',
     }, {
-      title: 'Age',
-      dataIndex: 'age',
-      key: 'age',
-    }, {
-      title: 'Gender',
-      dataIndex: 'isMale',
-      key: 'isMale',
-      render: text => (<span>{text
-        ? 'Male'
-        : 'Female'}</span>),
-    }, {
-      title: 'Phone',
-      dataIndex: 'phone',
-      key: 'phone',
-    }, {
-      title: 'Email',
+      title: '邮箱',
       dataIndex: 'email',
       key: 'email',
-    }, {
-      title: 'Address',
-      dataIndex: 'address',
-      key: 'address',
-    }, {
-      title: 'CreateTime',
+    },{
+      title: '创建日期',
       dataIndex: 'createTime',
       key: 'createTime',
+      render:(text) => new Date(text).format('yyyy-MM-dd'),
     }, {
-      title: 'Operation',
+      title: '状态',
+      dataIndex: 'state',
+      key: 'state',
+      render: text => (<span>{text
+        ? '启用'
+        : '禁用'}</span>),
+    },  {
+      title: '操作',
       key: 'operation',
       width: 100,
       render: (text, record) => {
-        return <DropOption onMenuClick={e => handleMenuClick(record, e)} menuOptions={[{ key: '1', name: 'Update' }, { key: '2', name: 'Delete' }]} />
+        return <DropOption onMenuClick={e => handleMenuClick(record, e)} menuOptions={[{ key: '1', name: '修改' }, { key: '2', name: '删除' }]} />
       },
     },
   ]
@@ -93,7 +87,7 @@ const List = ({
       {...tableProps}
       className={classnames(styles.table, { [styles.motion]: isMotion })}
       bordered
-      scroll={{ x: 1250 }}
+      scroll={{ x: 1000 }}
       columns={columns}
       simple
       rowKey={record => record.id}

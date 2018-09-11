@@ -3,24 +3,18 @@ import PropTypes from 'prop-types'
 import { Breadcrumb, Icon } from 'antd'
 import { Link } from 'react-router-dom'
 import pathToRegexp from 'path-to-regexp'
-import { queryArray } from 'utils'
+import { queryRouteArrayTree } from 'utils'
 import styles from './Layout.less'
 
 const Bread = ({ menu, location }) => {
   // 匹配当前路由
   let pathArray = []
-  let current
-  for (let index in menu) {
-    if (menu[index].pathKey && pathToRegexp(menu[index].pathKey).exec(location.pathname)) {
-      current = menu[index]
-      break
-    }
-  }
+  let current = queryRouteArrayTree(menu,location.pathname,'pathKey','subMenus')
 
   const getPathArray = (item) => {
     pathArray.unshift(item)
-    if (item.parentMenuId) {
-      getPathArray(queryArray(menu, item.parentMenuId, 'id'))
+    if (item.parentMenu) {
+      getPathArray(queryRouteArrayTree(menu,item.parentMenu,undefined, 'subMenus'))
     }
   }
 
@@ -59,7 +53,7 @@ const Bread = ({ menu, location }) => {
     )
     return (
       <Breadcrumb.Item key={key}>
-        {((pathArray.length - 1) !== key)
+        {((pathArray.length - 1) !== key && item.componentPath)
           ? <Link to={pathToRegexp.compile(item.pathKey || '')(paramMap) || '#'}>
             {content}
           </Link>

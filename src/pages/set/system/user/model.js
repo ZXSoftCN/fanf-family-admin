@@ -1,11 +1,9 @@
 /* global window */
 import modelExtend from 'dva-model-extend'
-import { config } from 'utils'
-import { create, remove, update } from './services/user'
-import * as usersService from './services/users'
-import { pageModel } from 'utils/model'
+import { config } from '../../../../utils/index'
+import * as userService from './services/user'
+import { pageModel } from '../../../../utils/model'
 
-const { query } = usersService
 const { prefix } = config
 
 export default modelExtend(pageModel, {
@@ -17,13 +15,14 @@ export default modelExtend(pageModel, {
     modalType: 'create',
     selectedRowKeys: [],
     isMotion: window.localStorage.getItem(`${prefix}userIsMotion`) === 'true',
+    eyeOpen:true,
   },
 
   subscriptions: {
     setup ({ dispatch, history }) {
       history.listen((location) => {
-        if (location.pathname === '/user') {
-          const payload = location.query || { page: 1, pageSize: 10 }
+        if (location.pathname === '/set/system/user') {
+          const payload = {page:0,size:10,...location.query}
           dispatch({
             type: 'query',
             payload,
@@ -34,26 +33,47 @@ export default modelExtend(pageModel, {
   },
 
   effects: {
-
     * query ({ payload = {} }, { call, put }) {
-      const data = yield call(query, payload)
+      const data = yield call(userService.queryParams, payload)
       if (data) {
         yield put({
           type: 'querySuccess',
           payload: {
-            list: data.data,
+            list: data.list,
             pagination: {
-              current: Number(payload.page) || 1,
-              pageSize: Number(payload.pageSize) || 10,
-              total: data.total,
+              current: Number(data.currentPage) || 1,
+              pageSize: Number(data.pageSize) || 10,
+              total: data.totalCount,
             },
           },
         })
       }
     },
 
+    * queryCurrent ({payload = {}}, {call, put}) {
+      const data = yield call(userService.query,payload)
+      if (data) {
+        // const item = {currtenItem: data}
+        yield put({
+          type: 'updateState',
+          payload: {
+            currentItem: data,
+          },
+        })
+
+        // yield put({
+        //   type: 'showModal',
+        //   payload: {
+        //     currentItem: data,
+        //     modalType: 'update',
+        //   },
+        // })
+      }
+    },
+
+
     * delete ({ payload }, { call, put, select }) {
-      const data = yield call(remove, { id: payload })
+      const data = yield call(userService.remove, { id: payload })
       const { selectedRowKeys } = yield select(_ => _.user)
       if (data.success) {
         yield put({ type: 'updateState', payload: { selectedRowKeys: selectedRowKeys.filter(_ => _ !== payload) } })
@@ -63,7 +83,7 @@ export default modelExtend(pageModel, {
     },
 
     * multiDelete ({ payload }, { call, put }) {
-      const data = yield call(usersService.remove, payload)
+      const data = yield call(userService.removeBatch, payload)
       if (data.success) {
         yield put({ type: 'updateState', payload: { selectedRowKeys: [] } })
       } else {
@@ -72,7 +92,7 @@ export default modelExtend(pageModel, {
     },
 
     * create ({ payload }, { call, put }) {
-      const data = yield call(create, payload)
+      const data = yield call(userService.create, payload)
       if (data.success) {
         yield put({ type: 'hideModal' })
       } else {
@@ -83,7 +103,7 @@ export default modelExtend(pageModel, {
     * update ({ payload }, { select, call, put }) {
       const id = yield select(({ user }) => user.currentItem.id)
       const newUser = { ...payload, id }
-      const data = yield call(update, newUser)
+      const data = yield call(userService.update, newUser)
       if (data.success) {
         yield put({ type: 'hideModal' })
       } else {
@@ -94,7 +114,6 @@ export default modelExtend(pageModel, {
   },
 
   reducers: {
-
     showModal (state, { payload }) {
       return { ...state, ...payload, modalVisible: true }
     },
@@ -106,6 +125,20 @@ export default modelExtend(pageModel, {
     switchIsMotion (state) {
       window.localStorage.setItem(`${prefix}userIsMotion`, !state.isMotion)
       return { ...state, isMotion: !state.isMotion }
+    },
+
+    switchEyeOpen (state){
+      return{
+        ...state,
+        eyeOpen: !state.eyeOpen,
+      }
+    },
+
+    initialEyeOpen (state){
+      return{
+        ...state,
+        eyeOpen: true,
+      }
     },
 
   },

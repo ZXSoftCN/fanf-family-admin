@@ -1,11 +1,11 @@
 import { request, config } from 'utils'
 
 const { api } = config
-const { userLogin } = api
+const { user } = api
 
 export function login (data) {
   return request({
-    url: userLogin,
+    url: user+'/login',
     method: 'post',
     data,
   })

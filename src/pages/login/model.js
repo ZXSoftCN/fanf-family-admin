@@ -4,8 +4,17 @@ import { login } from './service'
 export default {
   namespace: 'login',
 
-  state: {},
-
+  state: {
+    eyeOpen:false,
+  },
+  reducers:{
+    switchEyeOpen (state){
+      return {
+        ...state,
+        eyeOpen: !state.eyeOpen,
+      }
+    },
+  },
   effects: {
     * login ({
       payload,
@@ -15,8 +24,11 @@ export default {
       //   sessionStorage.setItem('token', data.data.token)
       // }
       const { locationQuery } = yield select(_ => _.app)
+      // const logState = yield select(_ => _.login)
+      // let {eyeOpen} = logState
       if (rep.success) {
         const { from } = locationQuery
+
         // const { data } = rep
         yield put({ type: 'app/query' ,payload: {userName:rep.userName}})
         if (from && from !== '/login') {

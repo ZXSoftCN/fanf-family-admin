@@ -36,9 +36,9 @@ const Header = ({
           <Icon type={classnames({ 'menu-unfold': siderFold, 'menu-fold': !siderFold })} />
         </div>}
       <div className={styles.rightWarpper}>
-        <div className={styles.button}>
-          <Icon type="mail" />
-        </div>
+        {/*<div className={styles.button}>*/}
+          {/*<Icon type="mail" />*/}
+        {/*</div>*/}
         <Menu mode="horizontal" onClick={handleClickMenu}>
           <SubMenu
             style={{
@@ -50,7 +50,7 @@ const Header = ({
             </span>}
           >
             <Menu.Item key="logout">
-              Sign out
+              注   销
             </Menu.Item>
           </SubMenu>
         </Menu>

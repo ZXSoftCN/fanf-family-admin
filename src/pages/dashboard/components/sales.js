@@ -22,8 +22,8 @@ function Sales ({ data }) {
               </ul>)
             }}
           />
-          <XAxis dataKey="month" name="月度" nameLocation="end" axisLine={{ stroke: color.borderBase, strokeWidth: 1 }} tickLine={false} />
-          <YAxis axisLine={false} tickLine={false} />
+          <XAxis dataKey="month" unit="月" name="月度" nameLocation="end" axisLine={{ stroke: color.borderBase, strokeWidth: 1 }} tickLine={false} />
+          <YAxis axisLine={{ stroke: color.borderBase, strokeWidth: 1 }} tickLine={false} unit="万"/>
           <CartesianGrid vertical={false} stroke={color.borderBase} strokeDasharray="3 3" />
           <Tooltip
             wrapperStyle={{ border: 'none', boxShadow: '4px 4px 40px rgba(0, 0, 0, 0.05)' }}
@@ -36,9 +36,9 @@ function Sales ({ data }) {
               return <div className={styles.tooltip}><p className={styles.tiptitle}>{`${content.label}月`}</p><ul>{list}</ul></div>
             }}
           />
-          <Line type="monotone" name="存量金额" dataKey="saveAmount" stroke={color.purple} strokeWidth={3} dot={{ fill: color.purple }} activeDot={{ r: 5, strokeWidth: 0 }} />
+          <Line type="monotone" name="存量金额 (万元)" dataKey="saveAmount" stroke={color.purple} strokeWidth={3} dot={{ fill: color.purple }} activeDot={{ r: 5, strokeWidth: 0 }} />
           {/*<Line type="monotone" dataKey="Clothes" stroke={color.red} strokeWidth={3} dot={{ fill: color.red }} activeDot={{ r: 5, strokeWidth: 0 }} />*/}
-          <Line type="monotone" name="在保金额" dataKey="keepAmount" stroke={color.green} strokeWidth={3} dot={{ fill: color.green }} activeDot={{ r: 5, strokeWidth: 0 }} />
+          <Line type="monotone" name="在保金额 (万元)" dataKey="keepAmount" stroke={color.green} strokeWidth={3} dot={{ fill: color.green }} activeDot={{ r: 5, strokeWidth: 0 }} />
         </LineChart>
       </ResponsiveContainer>
     </div>

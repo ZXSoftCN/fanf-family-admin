@@ -69,6 +69,9 @@ const fetch = (options) => {
       return axios.get(url, {
         ...baseConfig,
         params: cloneData,
+        paramsSerializer: function (params) {
+          return qs.stringify(params, {arrayFormat: 'repeat'})
+        },
       })
     case 'delete':
       return axios.delete(url, {
